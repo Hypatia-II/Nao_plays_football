@@ -25,12 +25,25 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e54f3ca3-4c67-402b-8941-569f09f25955" name="Default Changelist" comment="Test" />
+    <list default="true" id="e54f3ca3-4c67-402b-8941-569f09f25955" name="Default Changelist" comment="Test">
+      <change afterPath="$PROJECT_DIR$/ball_tracking_modified.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nao_virtual_n_real_maj_2020.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup_pynaoqi.bash" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ball_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/ball_tracking.py" afterDir="false" />
+    </list>
     <list id="4e8db8ba-3859-44db-b717-51c676c81c2c" name="&quot;Tracking de la balle&quot;" comment="Tracking de la balle" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,7 +60,33 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration name="nao_virtual_n_real_maj_2020" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="benito_theobald" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PYTHONPATH" value="$PROJECT_DIR$/..//external-software/pynaoqi-python2.7-2.1.4.13-linux64: " />
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/..//external-software/naolibs:" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nao_virtual_n_real_maj_2020.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -61,7 +100,8 @@
       <option name="presentableId" value="Default" />
       <updated>1604564664128</updated>
       <workItem from="1604564665455" duration="1099000" />
-      <workItem from="1604565786854" duration="990000" />
+      <workItem from="1604565786854" duration="7080000" />
+      <workItem from="1604572890696" duration="349000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Tracking de la balle&quot;">
       <created>1604564909789</created>
@@ -84,7 +124,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604565843905</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Test">
+      <created>1604566862437</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1604566862437</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -121,25 +168,40 @@
     <option name="LAST_COMMIT_MESSAGE" value="Test" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604564779375">
+    <state x="625" y="140" width="659" height="834" key="#nao_virtual_n_real_maj_2020" timestamp="1604572857946">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1604564779375" />
-    <state x="449" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1604566775671">
+    <state x="625" y="140" width="659" height="834" key="#nao_virtual_n_real_maj_2020/0.27.1920.1053@0.27.1920.1053" timestamp="1604572857946" />
+    <state x="751" y="257" width="861" height="542" key="EnvironmentVariablesDialog" timestamp="1604572853990">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="449" y="188" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1604566775671" />
+    <state x="751" y="257" width="861" height="542" key="EnvironmentVariablesDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1604572853990" />
+    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604567139504">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1604567139504" />
+    <state x="525" y="148" width="1022" height="737" key="SettingsEditor" timestamp="1604572662304">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="525" y="148" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1604572662304" />
     <state x="804" y="467" width="302" height="179" key="VCS.ChangelistChooser" timestamp="1604565079800">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="804" y="467" width="302" height="179" key="VCS.ChangelistChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1604565079800" />
-    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604565859283">
+    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604567366960">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1604565859283" />
+    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1604567366960" />
     <state x="561" y="413" width="787" height="287" key="git4idea.rebase.GitRebaseDialog" timestamp="1604565901638">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="561" y="413" width="787" height="287" key="git4idea.rebase.GitRebaseDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1604565901638" />
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1604569604701">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1604569604701" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/benito_theobald$nao_virtual_n_real_maj_2020.coverage" NAME="nao_virtual_n_real_maj_2020 Coverage Results" MODIFIED="1604573031724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
