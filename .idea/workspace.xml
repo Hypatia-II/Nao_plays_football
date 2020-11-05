@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e54f3ca3-4c67-402b-8941-569f09f25955" name="Default Changelist" comment="Test" />
+    <list id="4e8db8ba-3859-44db-b717-51c676c81c2c" name="&quot;Tracking de la balle&quot;" comment="Tracking de la balle" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1jraSX9xfdg387YNXMKK8avyaMy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e54f3ca3-4c67-402b-8941-569f09f25955" name="Default Changelist" comment="" />
+      <changelist id="4e8db8ba-3859-44db-b717-51c676c81c2c" name="&quot;Tracking de la balle&quot;" comment="" />
+      <created>1604564664128</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1604564664128</updated>
+      <workItem from="1604564665455" duration="1099000" />
+      <workItem from="1604565786854" duration="990000" />
+    </task>
+    <task id="LOCAL-00001" summary="&quot;Tracking de la balle&quot;">
+      <created>1604564909789</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1604564909789</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Tracking de la balle">
+      <created>1604565159765</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1604565159765</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Test">
+      <created>1604565843905</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1604565843905</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;Tracking de la balle&quot;" />
+    <MESSAGE value="Tracking de la balle" />
+    <MESSAGE value="Test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Test" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604564779375">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1604564779375" />
+    <state x="449" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1604566775671">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="449" y="188" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1604566775671" />
+    <state x="804" y="467" width="302" height="179" key="VCS.ChangelistChooser" timestamp="1604565079800">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="804" y="467" width="302" height="179" key="VCS.ChangelistChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1604565079800" />
+    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604565859283">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="555" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1604565859283" />
+    <state x="561" y="413" width="787" height="287" key="git4idea.rebase.GitRebaseDialog" timestamp="1604565901638">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="561" y="413" width="787" height="287" key="git4idea.rebase.GitRebaseDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1604565901638" />
+  </component>
+</project>
