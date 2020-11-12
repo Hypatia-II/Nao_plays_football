@@ -9,6 +9,7 @@ import os
 import signal
 from ball_tracking_modified import ball_tracking
 from head_tracking import head_track
+from body_tracking import body_track
 
 # specific to my laptop version (do not exist on Centos Students PCs)
 #import Image
@@ -61,7 +62,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.154"  # NaoQi's IP address.
+IP = "172.20.25.151"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -234,7 +235,6 @@ while missed < 30:
 
 
    found = ball_tracking(cvImg)
-   print(found)
    if found !=0:
       x_ball = found[0]
       y_ball = found[1]
@@ -251,6 +251,7 @@ while missed < 30:
    if (found):
       missed = 0
       yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
+      body_track(motionProxy, yaw)
 
 
    else:
@@ -265,7 +266,7 @@ while missed < 30:
 # relax !  no current in servos
 print postureProxy.getPostureList()
 postureProxy.goToPosture("Crouch", 0.5)
-stiffnesses  = 0.0
+stiffnesses = 0.0
 motionProxy.setStiffnesses(["Body"], stiffnesses)
 
 sys.exit(0)
