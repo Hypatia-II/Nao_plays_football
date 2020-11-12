@@ -16,7 +16,6 @@ def head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy):
 
 
     angles = [yaw1, pitch1]
-    print(yaw1, pitch1)
     fractionMaxSpeed = 0.5
     motionProxy.setAngles(names, angles, fractionMaxSpeed)
     return (yaw1, pitch1)

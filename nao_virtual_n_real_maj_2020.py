@@ -10,6 +10,7 @@ import signal
 from ball_tracking_modified import ball_tracking
 from head_tracking import head_track
 from body_tracking import body_track
+from distance_ball import params_size_ball
 
 # specific to my laptop version (do not exist on Centos Students PCs)
 #import Image
@@ -62,7 +63,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.151"  # NaoQi's IP address.
+IP = "172.20.25.152"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -123,11 +124,12 @@ cameraProxy = ALProxy("ALVideoDevice", IP, PORT)
 resolution = 1    # 0 : QQVGA, 1 : QVGA, 2 : VGA
 colorSpace = 11   # RGB
 camNum = 0 # 0:top cam, 1: bottom cam
-fps = 4; # frame Per Second
+fps = 4 # frame Per Second
 dtLoop = 1./fps
 cameraProxy.setParam(18, camNum)
 integral_x = 0
 integral_y = 0
+params_ball = params_size_ball()
 
 try:
    lSubs=cameraProxy.getSubscribers()
@@ -238,6 +240,7 @@ while missed < 30:
    if found !=0:
       x_ball = found[0]
       y_ball = found[1]
+      radius_ball = found[2]
       found = 1
 
 
@@ -251,7 +254,16 @@ while missed < 30:
    if (found):
       missed = 0
       yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
-      body_track(motionProxy, yaw)
+      if (abs(yaw)>0.05):
+         body_track(motionProxy, yaw)
+      else :
+         distance = 0.09*params_ball/(2*radius_ball)
+         print("dist: ", distance)
+         motionProxy.move(0.3*distance/(dtLoop), 0, 0)
+
+
+
+
 
 
    else:
