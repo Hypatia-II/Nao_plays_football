@@ -8,6 +8,7 @@ import math
 import os
 import signal
 from ball_tracking_modified import ball_tracking
+from head_tracking import head_track
 
 # specific to my laptop version (do not exist on Centos Students PCs)
 #import Image
@@ -60,7 +61,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.152"  # NaoQi's IP address.
+IP = "172.20.25.154"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -124,6 +125,9 @@ camNum = 0 # 0:top cam, 1: bottom cam
 fps = 4; # frame Per Second
 dtLoop = 1./fps
 cameraProxy.setParam(18, camNum)
+integral_x = 0
+integral_y = 0
+
 try:
    lSubs=cameraProxy.getSubscribers()
    for subs in lSubs:
@@ -237,7 +241,7 @@ while missed < 30:
       found = 1
 
 
-   camNum = 1
+   camNum = 0
    lSubs=cameraProxy.getSubscribers()
    for subs in lSubs:
       if subs.startswith("python_client"):
@@ -246,10 +250,8 @@ while missed < 30:
                                        resolution, colorSpace, fps)
    if (found):
       missed = 0
+      yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
 
-      #
-      # ??? insert head control here ???
-      #
 
    else:
       missed += 1
