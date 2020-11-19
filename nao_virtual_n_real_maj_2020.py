@@ -199,8 +199,8 @@ while not imgok:
 print "Image Size",imageWidth,imageHeight
 
 missed = 0
-
-while missed < 30: 
+motionProxy.wakeUp()
+while missed < 30:
    t0=time.time()
    # Get current image (top cam)
    imgok=False
@@ -238,31 +238,95 @@ while missed < 30:
 
    found = ball_tracking(cvImg)
    if found !=0:
+
       x_ball = found[0]
       y_ball = found[1]
       radius_ball = found[2]
       found = 1
 
    if (found):
-      missed = 0
-      yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
-      if (abs(yaw)>0.05):
-         body_track(motionProxy, yaw)
+
+      if camNum == 0:
+
+         missed = 0
+         yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
+         if (abs(yaw)>0.05):
+            body_track(motionProxy, yaw)
+         else :
+            distance = 0.09*params_ball/(2*radius_ball)
+            motionProxy.move(0.3*distance/(dtLoop), 0, 0)
+            if pitch > 0.6:
+               camNum = 1
+               try:
+                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+               except:
+                  print "pb with subscribe"
+                  lSubs = cameraProxy.getSubscribers()
+                  for subs in lSubs:
+                     if subs.startswith("python_client"):
+                        cameraProxy.unsubscribe(subs)
+                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+
+               motionProxy.stopMove()
+
+
+               angles = [0, 0.4]
+               fractionMaxSpeed = 0.5
+               motionProxy.setAngles(names, angles, fractionMaxSpeed)
+
+
+
+            # while True:
+            #    # Test getting a virtual camera image.
+            #    imgok = False
+            #    while not imgok:
+            #       if cstGreen:
+            #          try:
+            #             cvImg2 = cv2.imread(cameraImage)
+            #             imageHeight, imageWidth, imageChannels = cvImg2.shape
+            #             imgok = True
+            #          except Exception, e:
+            #             print "Can't read image %s, retry ..." % (cameraImage)
+            #             imgok = False
+            #             time.sleep(0.25)
+            #       else:
+            #          naoImage = cameraProxy.getImageRemote(videoClient)
+            #          array = naoImage[6]
+            #          # Create a PIL Image from our pixel array.
+            #          pilImg = Image.frombytes("RGB", (imageWidth, imageHeight), array)
+            #          cvImg2 = np.array(pilImg)  # Convert Image to OpenCV
+            #          cvImg2 = cvImg2[:, :, ::-1].copy()  # Convert RGB to BGR
+            #          imgok = True
+            #
+            #    # print "Image Size", imageWidth, imageHeight
+            #    cv2.imshow("Frame2", cvImg2)
+            #    cv2.waitKey(1)
+
+               # found = ball_tracking(cvImg2)
       else :
-         distance = 0.09*params_ball/(2*radius_ball)
-         motionProxy.move(0.3*distance/(dtLoop), 0, 0)
-         if pitch > 0.6:
-            camNum = 1
-            try:
-               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-            except:
-               print "pb with subscribe"
-               lSubs = cameraProxy.getSubscribers()
-               for subs in lSubs:
-                  if subs.startswith("python_client"):
-                     cameraProxy.unsubscribe(subs)
-               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-            motionProxy.stopMove()
+         x_pied = 120
+         y_pied = 170
+
+         distance_x = x_pied - x_ball
+         distance_y = - y_pied + y_ball
+         print("x: ", x_ball, x_pied)
+         print("dist: ", distance_x)
+
+         # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
+         if (abs(distance_x) > 1):
+            motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
+
+         if (abs(distance_y) > 1):
+            motionProxy.move(0, 0.0001 * distance_y / dtLoop, 0)
+
+         time.sleep(dtLoop)
+         motionProxy.stopMove()
+
+
+
+
+
+
 
    else:
       missed += 1
