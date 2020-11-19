@@ -63,7 +63,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.152"  # NaoQi's IP address.
+IP = "172.20.25.50"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -243,14 +243,6 @@ while missed < 30:
       radius_ball = found[2]
       found = 1
 
-
-   camNum = 0
-   lSubs=cameraProxy.getSubscribers()
-   for subs in lSubs:
-      if subs.startswith("python_client"):
-         cameraProxy.unsubscribe(subs)
-   videoClient = cameraProxy.subscribeCamera("python_client",camNum,
-                                       resolution, colorSpace, fps)
    if (found):
       missed = 0
       yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
@@ -258,13 +250,19 @@ while missed < 30:
          body_track(motionProxy, yaw)
       else :
          distance = 0.09*params_ball/(2*radius_ball)
-         print("dist: ", distance)
          motionProxy.move(0.3*distance/(dtLoop), 0, 0)
-
-
-
-
-
+         if pitch > 0.6:
+            camNum = 1
+            try:
+               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+            except:
+               print "pb with subscribe"
+               lSubs = cameraProxy.getSubscribers()
+               for subs in lSubs:
+                  if subs.startswith("python_client"):
+                     cameraProxy.unsubscribe(subs)
+               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+            motionProxy.stopMove()
 
    else:
       missed += 1
