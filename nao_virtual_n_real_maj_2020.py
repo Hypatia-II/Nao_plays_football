@@ -11,6 +11,7 @@ from ball_tracking_modified import ball_tracking
 from head_tracking import head_track
 from body_tracking import body_track
 from distance_ball import params_size_ball
+from cage_detection import detect_cage
 
 # specific to my laptop version (do not exist on Centos Students PCs)
 #import Image
@@ -63,7 +64,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.50"  # NaoQi's IP address.
+IP = "172.20.25.152"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -129,6 +130,7 @@ dtLoop = 1./fps
 cameraProxy.setParam(18, camNum)
 integral_x = 0
 integral_y = 0
+cage = 0
 params_ball = params_size_ball()
 
 try:
@@ -235,107 +237,102 @@ while missed < 30:
    # cv2.imshow("proc",cvImg)
    cv2.waitKey(1)
 
+   cage = detect_cage(cvImg)
+   print(cage)
 
-   found = ball_tracking(cvImg)
-   if found !=0:
-
-      x_ball = found[0]
-      y_ball = found[1]
-      radius_ball = found[2]
-      found = 1
-
-   if (found):
-
-      if camNum == 0:
-
-         missed = 0
-         yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
-         if (abs(yaw)>0.05):
-            body_track(motionProxy, yaw)
-         else :
-            distance = 0.09*params_ball/(2*radius_ball)
-            motionProxy.move(0.3*distance/(dtLoop), 0, 0)
-            if pitch > 0.6:
-               camNum = 1
-               try:
-                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-               except:
-                  print "pb with subscribe"
-                  lSubs = cameraProxy.getSubscribers()
-                  for subs in lSubs:
-                     if subs.startswith("python_client"):
-                        cameraProxy.unsubscribe(subs)
-                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-
-               motionProxy.stopMove()
-
-
-               angles = [0, 0.4]
-               fractionMaxSpeed = 0.5
-               motionProxy.setAngles(names, angles, fractionMaxSpeed)
-
-
-
-            # while True:
-            #    # Test getting a virtual camera image.
-            #    imgok = False
-            #    while not imgok:
-            #       if cstGreen:
-            #          try:
-            #             cvImg2 = cv2.imread(cameraImage)
-            #             imageHeight, imageWidth, imageChannels = cvImg2.shape
-            #             imgok = True
-            #          except Exception, e:
-            #             print "Can't read image %s, retry ..." % (cameraImage)
-            #             imgok = False
-            #             time.sleep(0.25)
-            #       else:
-            #          naoImage = cameraProxy.getImageRemote(videoClient)
-            #          array = naoImage[6]
-            #          # Create a PIL Image from our pixel array.
-            #          pilImg = Image.frombytes("RGB", (imageWidth, imageHeight), array)
-            #          cvImg2 = np.array(pilImg)  # Convert Image to OpenCV
-            #          cvImg2 = cvImg2[:, :, ::-1].copy()  # Convert RGB to BGR
-            #          imgok = True
-            #
-            #    # print "Image Size", imageWidth, imageHeight
-            #    cv2.imshow("Frame2", cvImg2)
-            #    cv2.waitKey(1)
-
-               # found = ball_tracking(cvImg2)
-      else :
-         x_pied = 120
-         y_pied = 170
-
-         distance_x = x_pied - x_ball
-         distance_y = - y_pied + y_ball
-         print("x: ", x_ball, x_pied)
-         print("dist: ", distance_x)
-
-         # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
-         if (abs(distance_x) > 1):
-            motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
-
-         if (abs(distance_y) > 1):
-            motionProxy.move(0, 0.0001 * distance_y / dtLoop, 0)
-
-         time.sleep(dtLoop)
-         motionProxy.stopMove()
-
-
-
-
-
-
-
-   else:
-      missed += 1
-   dt = time.time()-t0
-   tSleep = dtLoop-dt
-   if tSleep>0:
-      time.sleep(tSleep)
-   print "dtLoop = ",dtLoop,"tSleep = ",tSleep,"dt = ",dt,"frame rate = ",1./dt
-
+   # found = ball_tracking(cvImg)
+   # if found !=0:
+   #
+   #    x_ball = found[0]
+   #    y_ball = found[1]
+   #    radius_ball = found[2]
+   #    found = 1
+   #
+   # if (found):
+   #
+   #    if (camNum == 0) and (cage == 0):
+   #
+   #       missed = 0
+   #       yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
+   #       if (abs(yaw)>0.05):
+   #          body_track(motionProxy, yaw)
+   #       else :
+   #          distance = 0.09*params_ball/(2*radius_ball)
+   #          motionProxy.move(0.3*distance/(dtLoop), 0, 0)
+   #          if pitch > 0.6:
+   #             camNum = 1
+   #             try:
+   #                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+   #             except:
+   #                print "pb with subscribe"
+   #                lSubs = cameraProxy.getSubscribers()
+   #                for subs in lSubs:
+   #                   if subs.startswith("python_client"):
+   #                      cameraProxy.unsubscribe(subs)
+   #                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+   #
+   #             motionProxy.stopMove()
+   #
+   #
+   #             angles = [0, 0.4]
+   #             fractionMaxSpeed = 0.5
+   #             motionProxy.setAngles(names, angles, fractionMaxSpeed)
+   #
+   #
+   #    elif (camNum == 1) and (cage == 0):
+   #
+   #       x_pied = 205
+   #       y_pied = 174
+   #
+   #       distance_x = x_pied - x_ball
+   #       distance_y = y_pied - y_ball
+   #       print("x: ", x_ball, x_pied)
+   #       print("dist: ", distance_x)
+   #       # Pour faire avancer le robot en x mettre la coord en y dans moveTo
+   #
+   #       # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
+   #       if (abs(distance_x) > 10):
+   #          print()
+   #          motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
+   #          # motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
+   #       else:
+   #          print("stop")
+   #          motionProxy.stopMove()
+   #          camNum = 0
+   #          try:
+   #             videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+   #          except:
+   #             print "pb with subscribe"
+   #             lSubs = cameraProxy.getSubscribers()
+   #             for subs in lSubs:
+   #                if subs.startswith("python_client"):
+   #                   cameraProxy.unsubscribe(subs)
+   #             videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+   #
+   #          cage = detect_cage(cvImg)
+   #          print(cage)
+   #
+   #       # if (abs(distance_y) > 10):
+   #       #    motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
+   #
+   #       # time.sleep(dtLoop/5)
+   #
+   #       # motionProxy.stopMove()
+   #
+   #
+   #
+   #
+   #
+   #
+   #
+   # else:
+   #    missed += 1
+   # dt = time.time()-t0
+   # tSleep = dtLoop-dt
+   # if tSleep>0:
+   #    time.sleep(tSleep)
+   # print "dtLoop = ",dtLoop,"tSleep = ",tSleep,"dt = ",dt,"frame rate = ",1./dt
+   #
 
 # relax !  no current in servos
 print postureProxy.getPostureList()

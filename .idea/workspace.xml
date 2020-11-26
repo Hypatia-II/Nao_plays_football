@@ -26,6 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e54f3ca3-4c67-402b-8941-569f09f25955" name="Default Changelist" comment="Test">
+      <change afterPath="$PROJECT_DIR$/cage_detection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nao_virtual_n_real_maj_2020.py" beforeDir="false" afterPath="$PROJECT_DIR$/nao_virtual_n_real_maj_2020.py" afterDir="false" />
     </list>
@@ -127,7 +128,8 @@
       <workItem from="1604565786854" duration="7080000" />
       <workItem from="1604572890696" duration="503000" />
       <workItem from="1605165020583" duration="12707000" />
-      <workItem from="1605770695918" duration="12483000" />
+      <workItem from="1605770695918" duration="13135000" />
+      <workItem from="1606374746968" duration="9753000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Tracking de la balle&quot;">
       <created>1604564909789</created>
@@ -206,38 +208,38 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="733" y="320" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1604567139504" />
-    <state width="1874" height="240" key="GridCell.Tab.0.bottom" timestamp="1605783232378">
+    <state width="1874" height="184" key="GridCell.Tab.0.bottom" timestamp="1606386137339">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="240" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1605783232378" />
-    <state width="1874" height="240" key="GridCell.Tab.0.center" timestamp="1605783232378">
+    <state width="1874" height="184" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1606386137339" />
+    <state width="1874" height="184" key="GridCell.Tab.0.center" timestamp="1606386137338">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="240" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1605783232378" />
-    <state width="1874" height="240" key="GridCell.Tab.0.left" timestamp="1605783232377">
+    <state width="1874" height="184" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1606386137338" />
+    <state width="1874" height="184" key="GridCell.Tab.0.left" timestamp="1606386137338">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="240" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1605783232377" />
-    <state width="1874" height="240" key="GridCell.Tab.0.right" timestamp="1605783232378">
+    <state width="1874" height="184" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1606386137338" />
+    <state width="1874" height="184" key="GridCell.Tab.0.right" timestamp="1606386137338">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="240" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1605783232378" />
-    <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1605776020090">
+    <state width="1874" height="184" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1606386137338" />
+    <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1605798923417">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1605776020090" />
-    <state width="1874" height="340" key="GridCell.Tab.1.center" timestamp="1605776020090">
+    <state width="1874" height="340" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1605798923417" />
+    <state width="1874" height="340" key="GridCell.Tab.1.center" timestamp="1605798923416">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1605776020090" />
-    <state width="1874" height="340" key="GridCell.Tab.1.left" timestamp="1605776020089">
+    <state width="1874" height="340" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1605798923416" />
+    <state width="1874" height="340" key="GridCell.Tab.1.left" timestamp="1605798923416">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1605776020089" />
-    <state width="1874" height="340" key="GridCell.Tab.1.right" timestamp="1605776020090">
+    <state width="1874" height="340" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1605798923416" />
+    <state width="1874" height="340" key="GridCell.Tab.1.right" timestamp="1605798923417">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1605776020090" />
+    <state width="1874" height="340" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1605798923417" />
     <state x="525" y="148" width="1022" height="737" key="SettingsEditor" timestamp="1604572662304">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -260,7 +262,7 @@
     <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1604569604701" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/benito_theobald$nao_virtual_n_real_maj_2020.coverage" NAME="nao_virtual_n_real_maj_2020 Coverage Results" MODIFIED="1605783381541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/benito_theobald$nao_virtual_n_real_maj_2020.coverage" NAME="nao_virtual_n_real_maj_2020 Coverage Results" MODIFIED="1606386137327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/benito_theobald$distance_ball.coverage" NAME="distance_ball Coverage Results" MODIFIED="1605176727503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
