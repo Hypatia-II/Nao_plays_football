@@ -9,9 +9,10 @@ import os
 import signal
 from ball_tracking_modified import ball_tracking
 from head_tracking import head_track
+from head_scanning import head_scan
 from body_tracking import body_track
 from distance_ball import params_size_ball
-from cage_detection import detect_cage
+from cage_detection import get_output_layers, detect_cage
 
 # specific to my laptop version (do not exist on Centos Students PCs)
 #import Image
@@ -64,7 +65,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.152"  # NaoQi's IP address.
+IP = "172.20.25.153"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -73,6 +74,9 @@ if len(sys.argv) > 1:
    IP = sys.argv[1]
 if len(sys.argv) > 2:
    PORT = int(sys.argv[2])
+radixImg = "img"
+if len(sys.argv) > 3:
+   radixImg = sys.argv[3]
 
 
 # get image from vrep simulator
@@ -198,11 +202,34 @@ while not imgok:
    else:
       imgok=True
 
+
+# init tiny yolo
+yolo_path = "/home/ines/Documents/ENSTA/3A/Asservissement_visuel/Benito/UE52-VS-IK/benito_theobald"
+modelConfiguration = os.path.join(yolo_path, "yolo_nao.cfg")
+modelWeights = os.path.join(yolo_path, "yolov_nao.weights")
+
+net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
+net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+whT = 320
+confThreshold = 0.1  # detection threshold
+nmsThreshold = 0.2
+classNames = ['But']
+
+blob = cv2.dnn.blobFromImage(cvImg, 1.0 / 255.0, (whT, whT), [0., 0., 0.], 1, crop=False)
+net.setInput(blob)
+outputNames = get_output_layers(net)
+outputs = net.forward(outputNames)
+
+start_scan = True
+
+
 print "Image Size",imageWidth,imageHeight
+
 
 missed = 0
 motionProxy.wakeUp()
-while missed < 30:
+while missed < 120:
    t0=time.time()
    # Get current image (top cam)
    imgok=False
@@ -237,102 +264,160 @@ while missed < 30:
    # cv2.imshow("proc",cvImg)
    cv2.waitKey(1)
 
-   cage = detect_cage(cvImg)
-   print(cage)
 
-   # found = ball_tracking(cvImg)
-   # if found !=0:
-   #
-   #    x_ball = found[0]
-   #    y_ball = found[1]
-   #    radius_ball = found[2]
-   #    found = 1
-   #
-   # if (found):
-   #
-   #    if (camNum == 0) and (cage == 0):
-   #
-   #       missed = 0
-   #       yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
-   #       if (abs(yaw)>0.05):
-   #          body_track(motionProxy, yaw)
-   #       else :
-   #          distance = 0.09*params_ball/(2*radius_ball)
-   #          motionProxy.move(0.3*distance/(dtLoop), 0, 0)
-   #          if pitch > 0.6:
-   #             camNum = 1
-   #             try:
-   #                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-   #             except:
-   #                print "pb with subscribe"
-   #                lSubs = cameraProxy.getSubscribers()
-   #                for subs in lSubs:
-   #                   if subs.startswith("python_client"):
-   #                      cameraProxy.unsubscribe(subs)
-   #                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-   #
-   #             motionProxy.stopMove()
-   #
-   #
-   #             angles = [0, 0.4]
-   #             fractionMaxSpeed = 0.5
-   #             motionProxy.setAngles(names, angles, fractionMaxSpeed)
-   #
-   #
-   #    elif (camNum == 1) and (cage == 0):
-   #
-   #       x_pied = 205
-   #       y_pied = 174
-   #
-   #       distance_x = x_pied - x_ball
-   #       distance_y = y_pied - y_ball
-   #       print("x: ", x_ball, x_pied)
-   #       print("dist: ", distance_x)
-   #       # Pour faire avancer le robot en x mettre la coord en y dans moveTo
-   #
-   #       # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
-   #       if (abs(distance_x) > 10):
-   #          print()
-   #          motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
-   #          # motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
-   #       else:
-   #          print("stop")
-   #          motionProxy.stopMove()
-   #          camNum = 0
-   #          try:
-   #             videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-   #          except:
-   #             print "pb with subscribe"
-   #             lSubs = cameraProxy.getSubscribers()
-   #             for subs in lSubs:
-   #                if subs.startswith("python_client"):
-   #                   cameraProxy.unsubscribe(subs)
-   #             videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
-   #
-   #          cage = detect_cage(cvImg)
-   #          print(cage)
-   #
-   #       # if (abs(distance_y) > 10):
-   #       #    motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
-   #
-   #       # time.sleep(dtLoop/5)
-   #
-   #       # motionProxy.stopMove()
-   #
-   #
-   #
-   #
-   #
-   #
-   #
-   # else:
-   #    missed += 1
-   # dt = time.time()-t0
-   # tSleep = dtLoop-dt
-   # if tSleep>0:
-   #    time.sleep(tSleep)
-   # print "dtLoop = ",dtLoop,"tSleep = ",tSleep,"dt = ",dt,"frame rate = ",1./dt
-   #
+   blob = cv2.dnn.blobFromImage(cvImg, 1.0 / 255.0, (whT, whT), [0., 0., 0.], 1, crop=False)
+   net.setInput(blob)
+   outputNames = get_output_layers(net)
+   outputs = net.forward(outputNames)
+   cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence = detect_cage(outputs, cvImg,
+                                                                                                 confThreshold,
+                                                                                                 nmsThreshold,
+                                                                                                 classNames)
+   print("cage trouvee", cage_found)
+   if cage_found == 0:
+      # turn head
+
+      # test scan
+
+      names = ["HeadYaw", "HeadPitch"]
+      yaw0, pitch0 = motionProxy.getAngles(names, True)
+      fractionMaxSpeed = 0.8
+      angles = [-2.07, 0]
+      if start_scan:
+         motionProxy.setAngles(names, angles, fractionMaxSpeed)
+         start_scan = False
+      else:
+         head_scan(motionProxy, 0.25)
+
+
+
+   else:
+      x_milieu = width_cage / 2 + x_cage
+
+   cv2.imshow("yolo", dtImg)
+   cv2.waitKey(1)
+
+
+
+
+
+
+
+
+
+
+   found =0
+   found = ball_tracking(cvImg)
+   found = 0
+   if found !=0:
+
+      x_ball = found[0]
+      y_ball = found[1]
+      radius_ball = found[2]
+      found = 1
+
+   if (found or cage):
+
+      if (camNum == 0) and (cage == 0):
+
+         missed = 0
+         yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
+         if (abs(yaw)>0.05):
+            body_track(motionProxy, yaw)
+         else :
+            distance = 0.09*params_ball/(2*radius_ball)
+            motionProxy.move(0.3*distance/(dtLoop), 0, 0)
+            if pitch > 0.6:
+               camNum = 1
+               try:
+                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+               except:
+                  print "pb with subscribe"
+                  lSubs = cameraProxy.getSubscribers()
+                  for subs in lSubs:
+                     if subs.startswith("python_client"):
+                        cameraProxy.unsubscribe(subs)
+                  videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+
+               motionProxy.stopMove()
+
+
+               angles = [0, 0.4]
+               fractionMaxSpeed = 0.5
+               motionProxy.setAngles(names, angles, fractionMaxSpeed)
+
+
+      elif (camNum == 1) and (cage == 0):
+
+         x_pied = 205
+         y_pied = 174
+
+         distance_x = x_pied - x_ball
+         distance_y = y_pied - y_ball
+         print("x: ", x_ball, x_pied)
+         print("dist: ", distance_x)
+         # Pour faire avancer le robot en x mettre la coord en y dans moveTo
+
+         # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
+         if (abs(distance_x) > 10):
+            print()
+            motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
+            # motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
+         else:
+            print("stop")
+            motionProxy.stopMove()
+
+            cage = 1
+
+            camNum = 0
+            try:
+               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+            except:
+               print "pb with subscribe"
+               lSubs = cameraProxy.getSubscribers()
+               for subs in lSubs:
+                  if subs.startswith("python_client"):
+                     cameraProxy.unsubscribe(subs)
+               videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
+
+      elif (camNum == 0) and (cage == 1):
+
+         cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence = detect_cage(outputs,cvImg, confThreshold, nmsThreshold, classNames)
+         print("cage trouvee", cage_found)
+         if cage_found == 0:
+            # turn head
+            head_scan(motionProxy, dt)
+         else:
+            x_milieu = width_cage/2 + x_cage
+
+         cv2.imshow("yolo", dtImg)
+         cv2.waitKey(1)
+         # if cstGreen:
+         #    cv2.imwrite("/tmp/naosimu_%s_%4.4d_yolo.png" % (radixImg, imgCount), dtImg)
+         # else:
+         #    cv2.imwrite("/tmp/naoreal_%s_%4.4d_yolo.png" % (radixImg, imgCount), dtImg)
+         # imgCount += 1
+
+
+
+
+# if (abs(distance_y) > 10):
+         #    motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
+
+         # time.sleep(dtLoop/5)
+
+         # motionProxy.stopMove()
+
+
+
+   else:
+      missed += 1
+   dt = time.time()-t0
+   tSleep = dtLoop-dt
+   if tSleep>0:
+      time.sleep(tSleep)
+   print "dtLoop = ",dtLoop,"tSleep = ",tSleep,"dt = ",dt,"frame rate = ",1./dt
+
 
 # relax !  no current in servos
 print postureProxy.getPostureList()

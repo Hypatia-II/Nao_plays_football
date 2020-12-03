@@ -1,67 +1,58 @@
 import cv2
-import imutils
+import numpy as np
 
-def detect_cage(frame):
+try:
+   from PIL import Image
+except:
+   import Image
 
-    redLower = (0, 100, 100)
-    redUpper = (10, 255, 255)
 
-    # resize the frame, blur it, and convert it to the HSV
-    # color space
-    blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-    hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+# tiny yolo stuff
+def get_output_layers(net):
+    layer_names = net.getLayerNames()
+    output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+    return output_layers
 
-    # construct a mask for the color "red", then perform
-    # a series of dilations and erosions to remove any small
-    # blobs left in the mask
-    mask_red = cv2.inRange(hsv, redLower, redUpper)
-    mask_red = cv2.erode(mask_red, None, iterations=2)
-    mask_red = cv2.dilate(mask_red, None, iterations=2)
+def detect_cage(outputs,img, confThreshold, nmsThreshold, classNames):
+    hT, wT, cT = img.shape
+    bbox = []
+    classIds = []
+    confs = []
+    for output in outputs:
+        #print (output)
+        for det in output:
+            scores = det[5:]
+            classId = np.argmax(scores)
+            confidence = scores[classId]
+            if confidence > confThreshold:
+                w, h = int(det[2] * wT), int(det[3] * hT)
+                x, y = int((det[0] * wT) - w / 2), int((det[1] * hT) - h / 2)
+                bbox.append([x, y, w, h])
+                classIds.append(classId)
+                confs.append(float(confidence))
+    indices = cv2.dnn.NMSBoxes(bbox, confs, confThreshold, nmsThreshold)
 
-    mask_black = cv2.inRange(hsv, redLower, redUpper)
-    mask_black = cv2.erode(mask_black, None, iterations=2)
-    mask_black = cv2.dilate(mask_black, None, iterations=2)
-
-    # find contours in the mask and initialize the current
-    # (x, y) center of the ball
-    cnts_red = cv2.findContours(mask_red.copy(), cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)
-    cnts_red = imutils.grab_contours(cnts_red)
-
-    cnts_black = cv2.findContours(mask_black.copy(), cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)
-    cnts_black = imutils.grab_contours(cnts_black)
-    center = None
-
-    # only proceed if at least one contour was found
-    if len(cnts_red) > 3:
-
-        # find the largest contour in the mask, then use
-        # it to compute the minimum enclosing circle and
-        # centroid
-
-        c = max(cnts, key=cv2.contourArea)
-        ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
-        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
-        # only proceed if the radius meets a minimum size
-        if radius > 10:
-            # draw the circle and centroid on the frame,
-            # then update the list of tracked points
-            cv2.circle(frame, (int(x), int(y)), int(radius),
-                       (0, 255, 255), 2)
-            cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        found = int(x), int(y), radius
-
+    confidence_max = -1.0
+    xok, yok, wok, hok = 0.0, 0.0, 0.0, 0.0
+    idok = -1
+    if len(indices)!=0:
+        found = 1
+        for i in indices:
+            i = i[0]
+            confidence = confs[i]
+            if confidence > confidence_max:
+               confidence_max = confs[i]
+               xok, yok, wok, hok = bbox[i]
+               idok = classIds[i]
+            box = bbox[i]
+            x, y, w, h = box[0], box[1], box[2], box[3]
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
+            st = classNames[classIds[i]].upper()+"(%.1f%%)"%(confs[i] * 100)
+            cv2.putText(img, st,(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+            #print (st)
+            #cv2.putText(img, f'{classNames[classIds[i]].upper()} {int(confs[i] * 100)}%',(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+            print(classIds[i],int(confs[i]*100))
     else:
         found = 0
 
-    # show the frame to our screen
-
-    cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
-
-
-
-    return found
+    return found, img,xok,yok,wok,hok,idok,confidence_max
