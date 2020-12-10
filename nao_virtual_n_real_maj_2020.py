@@ -1,3 +1,4 @@
+# On realise les imports
 import sys
 import time
 import cv2
@@ -14,9 +15,8 @@ from body_tracking import body_track
 from distance_ball import params_size_ball
 from cage_detection import get_output_layers, detect_cage
 
-# specific to my laptop version (do not exist on Centos Students PCs)
-#import Image
 
+#import Image
 try:
    from PIL import Image
 except:
@@ -135,6 +135,7 @@ cameraProxy.setParam(18, camNum)
 integral_x = 0
 integral_y = 0
 cage = 0
+cage_found = 0
 params_ball = params_size_ball()
 
 try:
@@ -212,7 +213,7 @@ net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 whT = 320
-confThreshold = 0.1  # detection threshold
+confThreshold = 0.75  # detection threshold
 nmsThreshold = 0.2
 classNames = ['But']
 
@@ -265,50 +266,7 @@ while missed < 120:
    cv2.waitKey(1)
 
 
-   blob = cv2.dnn.blobFromImage(cvImg, 1.0 / 255.0, (whT, whT), [0., 0., 0.], 1, crop=False)
-   net.setInput(blob)
-   outputNames = get_output_layers(net)
-   outputs = net.forward(outputNames)
-   cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence = detect_cage(outputs, cvImg,
-                                                                                                 confThreshold,
-                                                                                                 nmsThreshold,
-                                                                                                 classNames)
-   print("cage trouvee", cage_found)
-   if cage_found == 0:
-      # turn head
-
-      # test scan
-
-      names = ["HeadYaw", "HeadPitch"]
-      yaw0, pitch0 = motionProxy.getAngles(names, True)
-      fractionMaxSpeed = 0.8
-      angles = [-2.07, 0]
-      if start_scan:
-         motionProxy.setAngles(names, angles, fractionMaxSpeed)
-         start_scan = False
-      else:
-         head_scan(motionProxy, 0.25)
-
-
-
-   else:
-      x_milieu = width_cage / 2 + x_cage
-
-   cv2.imshow("yolo", dtImg)
-   cv2.waitKey(1)
-
-
-
-
-
-
-
-
-
-
-   found =0
    found = ball_tracking(cvImg)
-   found = 0
    if found !=0:
 
       x_ball = found[0]
@@ -360,7 +318,6 @@ while missed < 120:
 
          # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
          if (abs(distance_x) > 10):
-            print()
             motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
             # motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
          else:
@@ -382,16 +339,75 @@ while missed < 120:
 
       elif (camNum == 0) and (cage == 1):
 
-         cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence = detect_cage(outputs,cvImg, confThreshold, nmsThreshold, classNames)
+         blob = cv2.dnn.blobFromImage(cvImg, 1.0 / 255.0, (whT, whT), [0., 0., 0.], 1, crop=False)
+         net.setInput(blob)
+         outputNames = get_output_layers(net)
+         outputs = net.forward(outputNames)
+         cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence= detect_cage(outputs, cvImg,
+                                                                                                       confThreshold,
+                                                                                                       nmsThreshold,
+                                                                                                       classNames)
+
+
          print("cage trouvee", cage_found)
          if cage_found == 0:
             # turn head
-            head_scan(motionProxy, dt)
+
+            # test scan
+
+            names = ["HeadYaw", "HeadPitch"]
+            yaw0, pitch0 = motionProxy.getAngles(names, True)
+            fractionMaxSpeed = 0.8
+            angles = [-2.07, 0]
+            if start_scan:
+               motionProxy.setAngles(names, angles, fractionMaxSpeed)
+               time.sleep(1)
+               start_scan = False
+            else:
+               head_scan(motionProxy, 0.25)
+
+
+
          else:
-            x_milieu = width_cage/2 + x_cage
+            x_milieu = width_cage / 2 + x_cage
+            print(x_milieu)
+            if (abs(yaw0) > 0.05):
+               print("ici")
+               sign = yaw0 / abs(yaw0)
+               r = 0.1 * sign
+               theta = 1.5
+               motionProxy.move(0, -3 * r * np.cos(theta), -0.05 * theta * sign)
+            else:
+               if (abs(distance_y) > 10):
+                  print("je m'avance vers la balle")
+                  motionProxy.move(-10 ** (-2) * distance_y / 5, 0, 0)
+               else:
+                  motionProxy.stopMove()
 
          cv2.imshow("yolo", dtImg)
          cv2.waitKey(1)
+
+         names = ["HeadYaw", "HeadPitch"]
+         yaw0, pitch0 = motionProxy.getAngles(names, True)
+
+      # elif cage_found:
+         # if (abs(yaw0)>0.05):
+         #    print("ici")
+         #    sign = yaw0/abs(yaw0)
+         #    r = 0.1*sign
+         #    theta = 1.5
+         #    motionProxy.move(0, 3 * r * np.cos(theta), -0.05 * theta*sign)
+         # else:
+         #    if (abs(distance_y) > 10):
+         #       print("je m'avance vers la balle")
+         #       motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
+         #    else:
+         #       motionProxy.stopMove()
+
+
+
+
+
          # if cstGreen:
          #    cv2.imwrite("/tmp/naosimu_%s_%4.4d_yolo.png" % (radixImg, imgCount), dtImg)
          # else:
@@ -403,6 +419,7 @@ while missed < 120:
 
 # if (abs(distance_y) > 10):
          #    motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
+         # motionProxy.moveTo(0, 10 ** (-2) * distance_x / 5, 0)
 
          # time.sleep(dtLoop/5)
 

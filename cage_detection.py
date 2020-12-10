@@ -55,4 +55,4 @@ def detect_cage(outputs,img, confThreshold, nmsThreshold, classNames):
     else:
         found = 0
 
-    return found, img,xok,yok,wok,hok,idok,confidence_max
+    return found, img,xok,yok,wok,hok,idok,confidence
