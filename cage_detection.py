@@ -14,12 +14,20 @@ def get_output_layers(net):
     return output_layers
 
 def detect_cage(outputs,img, confThreshold, nmsThreshold, classNames):
+    """
+    Fonction detect_cage qui detecte les cages avec un algorithme de machine learning
+    :param outputs: Liste des objets
+    :param img: Image
+    :param confThreshold: Seuil de confiance
+    :param nmsThreshold: Seuil NMS
+    :param classNames: Label des objets cherches
+    :return: found,img
+    """
     hT, wT, cT = img.shape
     bbox = []
     classIds = []
     confs = []
     for output in outputs:
-        #print (output)
         for det in output:
             scores = det[5:]
             classId = np.argmax(scores)
@@ -49,10 +57,8 @@ def detect_cage(outputs,img, confThreshold, nmsThreshold, classNames):
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
             st = classNames[classIds[i]].upper()+"(%.1f%%)"%(confs[i] * 100)
             cv2.putText(img, st,(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
-            #print (st)
-            #cv2.putText(img, f'{classNames[classIds[i]].upper()} {int(confs[i] * 100)}%',(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
             print(classIds[i],int(confs[i]*100))
     else:
         found = 0
 
-    return found, img,xok,yok,wok,hok,idok,confidence
+    return found,img

@@ -4,18 +4,14 @@ import time
 import cv2
 from naoqi import ALProxy
 import numpy as np
-import random
-import math
 import os
 import signal
-from ball_tracking_modified import ball_tracking
+from ball_tracking import ball_tracking
 from head_tracking import head_track
 from head_scanning import head_scan
 from body_tracking import body_track
 from distance_ball import params_size_ball
 from cage_detection import get_output_layers, detect_cage
-
-
 #import Image
 try:
    from PIL import Image
@@ -65,7 +61,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.153"  # NaoQi's IP address.
+IP = "172.20.25.154"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -213,7 +209,7 @@ net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 whT = 320
-confThreshold = 0.75  # detection threshold
+confThreshold = 0.65  # detection threshold
 nmsThreshold = 0.2
 classNames = ['But']
 
@@ -265,26 +261,32 @@ while missed < 120:
    # cv2.imshow("proc",cvImg)
    cv2.waitKey(1)
 
-
+   # Appel de le fonction ball_tracking pour detecter les balles jaunes
    found = ball_tracking(cvImg)
-   if found !=0:
 
+   # Si une balle a ete trouvee, on recupere les coordonnees x et y de cette derniere et on met la variable found a True
+   if found !=0:
       x_ball = found[0]
       y_ball = found[1]
       radius_ball = found[2]
       found = 1
 
+   #Si on a trouve une balle ou si on cherche des cages apres avoir trouve la balle
    if (found or cage):
 
+      # Si on regarde par la camera frontale et que l'on ne cherche pas les cages, on appelle la fonction head_track
+      # pour aligner la tete avec la balle. Puis on aligne le corps avec la tete en faisant appel a la fonction body_track
+      # si l'angle de la tete est superieur a 0.05rad. Quand le corps est aligne, il avance vers la balle et si l'angle
+      # d'inclinaison de la tete depasse 0.6rad (ce qui equivaut a une balle proche) on passe a la camera bucale et on
+      # releve la tete
       if (camNum == 0) and (cage == 0):
-
          missed = 0
          yaw, pitch = head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy)
          if (abs(yaw)>0.05):
             body_track(motionProxy, yaw)
          else :
             distance = 0.09*params_ball/(2*radius_ball)
-            motionProxy.move(0.3*distance/(dtLoop), 0, 0)
+            motionProxy.move(0.2*distance/(dtLoop), 0, 0)
             if pitch > 0.6:
                camNum = 1
                try:
@@ -298,34 +300,30 @@ while missed < 120:
                   videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
 
                motionProxy.stopMove()
-
-
                angles = [0, 0.4]
                fractionMaxSpeed = 0.5
                motionProxy.setAngles(names, angles, fractionMaxSpeed)
 
+      # Une fois la camera bucale activee et si l'on ne cherche toujours pas les cages, on positionne le pied droit du
+      # robot en face de la balle. On passe donc a la camera frontale et on se met a chercher la balle en passant cage
+      # a True
 
       elif (camNum == 1) and (cage == 0):
 
          x_pied = 205
          y_pied = 174
-
          distance_x = x_pied - x_ball
          distance_y = y_pied - y_ball
-         print("x: ", x_ball, x_pied)
-         print("dist: ", distance_x)
          # Pour faire avancer le robot en x mettre la coord en y dans moveTo
-
-         # if (abs(distance_x) > 45) or (abs(distance_y) > 5):
-         if (abs(distance_x) > 10):
+         if (abs(distance_x) > 15):
             motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
-            # motionProxy.move(0.0001 * distance_x / dtLoop, 0, 0)
          else:
-            print("stop")
+            # if (abs(distance_y) > 10):
+            #    print("je m'avance vers la balle")
+            #    motionProxy.move(10**(-2)*distance_y/50, 0, 0)
+            # else:
             motionProxy.stopMove()
-
             cage = 1
-
             camNum = 0
             try:
                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
@@ -337,24 +335,21 @@ while missed < 120:
                      cameraProxy.unsubscribe(subs)
                videoClient = cameraProxy.subscribeCamera("python_client", camNum, resolution, colorSpace, fps)
 
+      # Lorsque l'on cherche les cages et que l'on utilise la camera frontale, on detecte la presence de cages avec
+      # l'algorithme de machine learning de la fonction detect_cage. Si aucune cage n'a ete trouvee, on demarre un scan
+      # de l'environnement par la droite. Lorsque la  cage est trouvee, on tourne en arc de cercle autour de la balle
+      # pour se placer en face des cages. On ne cherche donc plus les cages, cage est passe a False.
       elif (camNum == 0) and (cage == 1):
 
          blob = cv2.dnn.blobFromImage(cvImg, 1.0 / 255.0, (whT, whT), [0., 0., 0.], 1, crop=False)
          net.setInput(blob)
          outputNames = get_output_layers(net)
          outputs = net.forward(outputNames)
-         cage_found, dtImg, x_cage, y_cage, width_cage, height_cage, id_cage, confidence= detect_cage(outputs, cvImg,
-                                                                                                       confThreshold,
-                                                                                                       nmsThreshold,
-                                                                                                       classNames)
+         cage_found, dtImg= detect_cage(outputs, cvImg,confThreshold,nmsThreshold,classNames)
 
-
-         print("cage trouvee", cage_found)
          if cage_found == 0:
             # turn head
-
             # test scan
-
             names = ["HeadYaw", "HeadPitch"]
             yaw0, pitch0 = motionProxy.getAngles(names, True)
             fractionMaxSpeed = 0.8
@@ -364,68 +359,27 @@ while missed < 120:
                time.sleep(1)
                start_scan = False
             else:
-               head_scan(motionProxy, 0.25)
+               head_scan(motionProxy)
 
-
-
-         else:
-            x_milieu = width_cage / 2 + x_cage
-            print(x_milieu)
-            if (abs(yaw0) > 0.05):
-               print("ici")
+         elif cage_found == 1:
+            if (abs(yaw0) > 0.01):
                sign = yaw0 / abs(yaw0)
-               r = 0.1 * sign
-               theta = 1.5
-               motionProxy.move(0, -3 * r * np.cos(theta), -0.05 * theta * sign)
-            else:
-               if (abs(distance_y) > 10):
-                  print("je m'avance vers la balle")
-                  motionProxy.move(-10 ** (-2) * distance_y / 5, 0, 0)
-               else:
-                  motionProxy.stopMove()
+               theta = abs(yaw0)
+               print(yaw0)
+               motionProxy.moveTo( 0, 3 * sign * np.cos(theta), -1.5 * yaw)
 
+               print("j'aligne ma tete")
+               names = ["HeadYaw", "HeadPitch"]
+               fractionMaxSpeed = 0.5
+               angles = [0.05 * theta * sign, 0]
+               motionProxy.setAngles(names, angles, fractionMaxSpeed)
+               print("je shoote")
+               motionProxy.moveTo(30, 0, 0)
          cv2.imshow("yolo", dtImg)
          cv2.waitKey(1)
 
          names = ["HeadYaw", "HeadPitch"]
          yaw0, pitch0 = motionProxy.getAngles(names, True)
-
-      # elif cage_found:
-         # if (abs(yaw0)>0.05):
-         #    print("ici")
-         #    sign = yaw0/abs(yaw0)
-         #    r = 0.1*sign
-         #    theta = 1.5
-         #    motionProxy.move(0, 3 * r * np.cos(theta), -0.05 * theta*sign)
-         # else:
-         #    if (abs(distance_y) > 10):
-         #       print("je m'avance vers la balle")
-         #       motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
-         #    else:
-         #       motionProxy.stopMove()
-
-
-
-
-
-         # if cstGreen:
-         #    cv2.imwrite("/tmp/naosimu_%s_%4.4d_yolo.png" % (radixImg, imgCount), dtImg)
-         # else:
-         #    cv2.imwrite("/tmp/naoreal_%s_%4.4d_yolo.png" % (radixImg, imgCount), dtImg)
-         # imgCount += 1
-
-
-
-
-# if (abs(distance_y) > 10):
-         #    motionProxy.move(-10**(-2)*distance_y/5, 0, 0)
-         # motionProxy.moveTo(0, 10 ** (-2) * distance_x / 5, 0)
-
-         # time.sleep(dtLoop/5)
-
-         # motionProxy.stopMove()
-
-
 
    else:
       missed += 1

@@ -1,6 +1,10 @@
 import numpy as np
 
 def params_size_ball():
+    """
+    Fonction params_size_ball qui permet de faire la calibration de la camera
+    :return: moy: coefficient pour la calibration
+    """
     db1 = np.sqrt(0.4**2+0.6**2)
     db2 = np.sqrt(0.4 ** 2 + 1 ** 2)
     lpx1 = 1.8*320/14.6

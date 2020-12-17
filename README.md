@@ -1,7 +1,19 @@
 # Benito_Theobald
-Noms et Prénoms du binôme: 
-Benito Inès
+Noms et Prénoms du binôme:
+-
+Benito Inès \
 Theobald Mathilde
 
-Rendu: Programme de détection de la balle jaune, orientation de la tête et du corps, avancée vers la balle, détection 
-des cages, placement face à la balle et aux cages, tir.  
+Rendu: 
+-
+   - Programme de détection de la balle jaune
+   - Orientation de la tête et du corps face à la balle
+   - Avancée vers la balle
+   - Détection des cages par machine learning 
+   - Placement face à la balle et aux cages
+   - Tir dans la balle 
+
+Lancement du programme: 
+- 
+   - Sous pycharm lancer le fichier "nao_virtual_n__real_maj_2020.py" en renseignant la bonne adresse IP dans le code 
+   (ligne 64)

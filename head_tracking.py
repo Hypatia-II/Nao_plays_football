@@ -1,5 +1,18 @@
-
 def head_track(x_ball, y_ball, integral_x, integral_y, dtLoop, motionProxy):
+    """
+    Fonction head_track qui permet de placer de suivre la balle avec la tete en la placant au milieu de l'image
+    On realise un asservissement proportionnel. Apres des tests, l'integrateur ne s'est pas revele indispensable.
+    Inputs:
+        - x_ball: Abscisse de la balle sur l'image
+        - y_ball: Ordonnee de la balle sur l'image
+        - integral_x: Somme des erreurs en x
+        - integral_y: Somme des erreurs en y
+        - dtLoop: Temps d'une boucle
+        - motionProxy
+    Outputs:
+        - yaw1: Angle yaw dont le robot a tourne
+        - pitch1: Angle pitch dont le robot a tourne
+    """
     w = 320
     h = 240
     (errx, erry) = (-x_ball+w/2, y_ball-h/2)
