@@ -61,7 +61,7 @@ imgCount=0
 # PORT = 11212  # NaoQi's port
 # if one NAO in the scene PORT is 11212
 # if two NAOs in the scene PORT is 11212 for the first and 11216 for the second
-IP = "172.20.25.154"  # NaoQi's IP address.
+IP = "172.20.25.50"  # NaoQi's IP address.
 PORT = 9559  # NaoQi's port
 
 # Read IP address and PORT form arguments if any.
@@ -316,7 +316,7 @@ while missed < 120:
          distance_y = y_pied - y_ball
          # Pour faire avancer le robot en x mettre la coord en y dans moveTo
          if (abs(distance_x) > 15):
-            motionProxy.moveTo(0,10**(-2)*distance_x/5,0)
+            motionProxy.moveTo(0,10**(-3)*distance_x,0)
          else:
             # if (abs(distance_y) > 10):
             #    print("je m'avance vers la balle")
@@ -346,6 +346,7 @@ while missed < 120:
          outputNames = get_output_layers(net)
          outputs = net.forward(outputNames)
          cage_found, dtImg= detect_cage(outputs, cvImg,confThreshold,nmsThreshold,classNames)
+         print("cage trouvee", cage_found)
 
          if cage_found == 0:
             # turn head
@@ -362,17 +363,24 @@ while missed < 120:
                head_scan(motionProxy)
 
          elif cage_found == 1:
-            if (abs(yaw0) > 0.01):
+            confThreshold = 0.3
+            yaw0, pitch0 = motionProxy.getAngles(names, True)
+            print("je suis la")
+            if (abs(yaw0) > 0.4):
+               print("j'ajuste position")
                sign = yaw0 / abs(yaw0)
-               theta = abs(yaw0)
-               print(yaw0)
-               motionProxy.moveTo( 0, 3 * sign * np.cos(theta), -1.5 * yaw)
-
+               # theta = abs(yaw0)
+               print("yaw", yaw0)
+               theta = 1.5
+               # motionProxy.moveTo( 0, 3 * sign * np.cos(theta), -1.5 * yaw0)
+               motionProxy.move(0, -0.5 * sign * np.cos(theta), 0.1*theta* yaw0)
                print("j'aligne ma tete")
                names = ["HeadYaw", "HeadPitch"]
-               fractionMaxSpeed = 0.5
-               angles = [0.05 * theta * sign, 0]
+               fractionMaxSpeed = 0.3
+               #angles = [yaw0 - 0.08*theta*yaw0, 0]
+               angles = [yaw0 - 0.03 * theta * yaw0, 0]
                motionProxy.setAngles(names, angles, fractionMaxSpeed)
+            else:
                print("je shoote")
                motionProxy.moveTo(30, 0, 0)
          cv2.imshow("yolo", dtImg)
