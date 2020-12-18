@@ -286,7 +286,8 @@ while missed < 120:
             body_track(motionProxy, yaw)
          else :
             distance = 0.09*params_ball/(2*radius_ball)
-            motionProxy.move(0.2*distance/(dtLoop), 0, 0)
+            # motionProxy.move(0.2*distance/(dtLoop), 0, 0)
+            motionProxy.move(0.09 * distance / (dtLoop), 0, 0)
             if pitch > 0.6:
                camNum = 1
                try:
@@ -318,10 +319,6 @@ while missed < 120:
          if (abs(distance_x) > 15):
             motionProxy.moveTo(0,10**(-3)*distance_x,0)
          else:
-            # if (abs(distance_y) > 10):
-            #    print("je m'avance vers la balle")
-            #    motionProxy.move(10**(-2)*distance_y/50, 0, 0)
-            # else:
             motionProxy.stopMove()
             cage = 1
             camNum = 0
@@ -366,7 +363,7 @@ while missed < 120:
             confThreshold = 0.3
             yaw0, pitch0 = motionProxy.getAngles(names, True)
             print("je suis la")
-            if (abs(yaw0) > 0.4):
+            if (abs(yaw0) > 0.2):
                print("j'ajuste position")
                sign = yaw0 / abs(yaw0)
                # theta = abs(yaw0)
